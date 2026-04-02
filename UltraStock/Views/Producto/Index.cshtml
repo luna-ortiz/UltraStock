@@ -1,0 +1,35 @@
+﻿@model List<UltraStock.Models.Producto>
+
+<h2>Lista de Productos</h2>
+
+<a class="btn btn-primary" href="/Producto/Create">Nuevo Producto</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Precio</th>
+            <th>Stock</th>
+            <th>Categoría</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Nombre</td>
+                <td>@item.Precio</td>
+                <td>@item.Stock</td>
+                <td>@item.Categoria?.Nombre</td>
+
+                <td>
+                    <a href="/Producto/Edit/@item.Id">Editar</a>
+
+                    <a href="/Producto/Delete/@item.Id">Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

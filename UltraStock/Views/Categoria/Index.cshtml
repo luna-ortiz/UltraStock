@@ -1,0 +1,32 @@
+﻿@model List<UltraStock.Models.Categoria>
+
+<h2>Lista de Categorias</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Descripcion</th>
+            <th>Estado</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var cat in Model)
+        {
+            <tr>
+                <td>@cat.Nombre</td>
+                <td>@cat.Descripcion</td>
+                <td>
+                    @if (string.IsNullOrEmpty(cat.Nombre))
+                    {
+                        <span class="text-danger">Sin nombre</span>
+                    }
+                    else
+                    {
+                        <span class="text-success">Activa</span>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
