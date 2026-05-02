@@ -1,0 +1,17 @@
+﻿<h2>Login</h2>
+<form method="post">
+    <div class="mb-3">
+        <label>Correo</label>
+        <input name="correo" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label>Clave</label>
+        <input name="clave" type="password" class="form-control" />
+    </div>
+    <button class="btn btn-primary">Ingresar</button>
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="text-danger">@ViewBag.Error</div>
+    }
+</form>

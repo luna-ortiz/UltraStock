@@ -3,6 +3,9 @@ using UltraStock.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//habilitar la sesión
+builder.Services.AddSession();
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
@@ -19,6 +22,8 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.UseSession(); //sessión
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
@@ -28,6 +33,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Login}/{action=Index}/{id?}"); //inicia desde login
 
 app.Run();

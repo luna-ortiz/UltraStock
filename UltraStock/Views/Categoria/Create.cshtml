@@ -1,0 +1,29 @@
+﻿@model UltraStock.Models.Categoria
+
+<div class="container mt-4">
+
+    <h2>Crear Categoria</h2>
+
+    <form asp-action="Create" method="post">
+
+        <div class="mb-3">
+            <label class="form-label">Nombre</label>
+            <input asp-for="Nombre" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Descripcion</label>
+            <input asp-for="Descripcion" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Estado</label>
+            <input asp-for="Estado" class="form-control" />
+        </div>
+
+        <button class="btn btn-success">Guardar</button>
+        <a href="/Categoria" class="btn btn-secondary">Volver</a>
+
+    </form>
+
+</div>

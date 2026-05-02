@@ -1,15 +1,25 @@
 ﻿@model List<UltraStock.Models.Categoria>
 
-<h2>Lista de Categorias</h2>
+<h2 class="mb-3">Lista de Categorias</h2>
+
+@if (Context.Session.GetString("Rol") == "admin") //si es admin
+{
+    <a class="btn btn-success mb-3" href="/Categoria/Create">+ Nueva Categoria</a>
+}
 
 <table class="table">
-    <thead>
+    <thead class="table-dark">
         <tr>
             <th>Nombre</th>
             <th>Descripcion</th>
             <th>Estado</th>
+            @if (Context.Session.GetString("Rol") == "admin")//si es admin
+            {
+                <th>Acciones</th>
+            }
         </tr>
     </thead>
+
     <tbody>
         @foreach (var cat in Model)
         {
@@ -19,13 +29,25 @@
                 <td>
                     @if (string.IsNullOrEmpty(cat.Nombre))
                     {
-                        <span class="text-danger">Sin nombre</span>
+                        <span class="text-danger" href="/Categoria/Edit/@cat.Id">Sin nombre</span>
                     }
                     else
                     {
-                        <span class="text-success">Activa</span>
+                        <span class="text-success" href="/Categoria/Delete/@cat.Id">Activa</span>
                     }
                 </td>
+
+                @if (Context.Session.GetString("Rol") == "admin") //si es admin
+                {
+                    <td>
+                        <a class="btn btn-warning btn-sm"
+                           href="/Categoria/Edit/@cat.Id">Editar</a>
+                    
+                        <a class="btn btn-danger btn-sm"
+                           href="/Categoria/Delete/@cat.Id">Eliminar</a>
+                    </td>
+                }
+
             </tr>
         }
     </tbody>

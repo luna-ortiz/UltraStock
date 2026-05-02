@@ -1,20 +1,109 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using UltraStock.Data;
 using UltraStock.Models;
 
 namespace UltraStock.Controllers
 {
     public class CategoriaController : Controller
     {
+        private readonly AppDbContext _context;
+
+        public CategoriaController(AppDbContext context)
+        {
+            _context = context;
+        }
+
         public IActionResult Index()
         {
-            var categorias = new List<Categoria>
+            if (HttpContext.Session.GetString("Usuario") == null)
             {
-                new Categoria {Nombre = "Tecnología", Descripcion = "Productos tecnológicos"},
-                new Categoria {Nombre = "Ropa", Descripcion = "Prendas de vestir"},
-                new Categoria {Nombre = "", Descripcion = "Sin nombre definido"}
-            };
+                return RedirectToAction("Index", "Login");
+            }
+
+            var categorias = _context.Categorias.ToList();
 
             return View(categorias);
         }
+
+        //Guardar categoria
+
+        public IActionResult Create()
+        {
+            if (HttpContext.Session.GetString("Usuario") == null)
+            {
+                return RedirectToAction("Index", "Login");
+            }
+
+            ViewBag.Categorias = _context.Categorias.ToList();
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Create(Categoria categoria)
+        {
+            if (HttpContext.Session.GetString("Usuario") == null)
+            {
+                return RedirectToAction("Index", "Login");
+            }
+
+            _context.Categorias.Add(categoria);
+            _context.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
+
+        //Formulario editar
+        public IActionResult Edit(int id)
+        {
+            if (HttpContext.Session.GetString("Usuario") == null)
+            {
+                return RedirectToAction("Index", "Login");
+            }
+
+            var categoria = _context.Categorias.Find(id);
+
+            return View(categoria);
+        }
+
+        //Actualizar producto
+        [HttpPost]
+        public IActionResult Edit(Categoria categoria)
+        {
+            if (HttpContext.Session.GetString("Usuario") == null)
+            {
+                return RedirectToAction("Index", "Login");
+            }
+
+            _context.Categorias.Update(categoria);
+            _context.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
+
+        //Eliminar producto
+        public IActionResult Delete(int id)
+        {
+            if (HttpContext.Session.GetString("Usuario") == null)
+            {
+                return RedirectToAction("Index", "Login");
+            }
+
+            var rol = HttpContext.Session.GetString("Rol");//Solo admin puede eliminar
+            if (rol != "admin")
+            {
+                return RedirectToAction("Index");
+            }
+
+            var categoria = _context.Categorias.Find(id);
+
+            _context.Categorias.Remove(categoria);
+            _context.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
+
+
     }
 }
