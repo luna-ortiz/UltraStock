@@ -2,48 +2,41 @@
 
 <h2 class="mb-3">Lista de Productos</h2>
 
-@if (Context.Session.GetString("Rol") == "admin") //si es admin
+@if (Context.Session.GetString("Rol") == "admin")
 {
     <a class="btn btn-success mb-3" href="/Producto/Create">+ Nuevo Producto</a>
 }
 
-<table class="table table-striped table-bordered">
-    <thead class="table-dark">
-        <tr>
-            <th>Nombre</th>
-            <th>Precio</th>
-            <th>Stock</th>
-            <th>Categoría</th>
-            @if (Context.Session.GetString("Rol") == "admin")//si es admin
-            {
-                <th>Acciones</th>
-            }
-            
-        </tr>
-    </thead>
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="col-md-3 mb-4">
 
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@item.Nombre</td>
-                <td>@item.Precio</td>
-                <td>@item.Stock</td>
-                <td>@item.Categoria?.Nombre</td>
+            <div class="card h-100 shadow">
 
+                <img src="@item.ImagenUrl"
+                     class="card-img-top"
+                     style="height:200px; object-fit:cover;" />
 
-                @if (Context.Session.GetString("Rol") == "admin") //si es admin
-                {
-                    <td>
-                        <a class="btn btn-warning btn-sm"
-                           href="/Producto/Edit/@item.Id">Editar</a>
+                <div class="card-body">
 
-                        <a class="btn btn-danger btn-sm"
-                           href="/Producto/Delete/@item.Id">Eliminar</a>
-                    </td>
-                }
-                
-            </tr>
-        }
-    </tbody>
-</table>
+                    <h5 class="card-tittle">@item.Nombre</h5>
+
+                    <p class="card-text">
+                        Precio: $@item.Precio <br />
+                        Stock: @item.Stock <br />
+                        Categoria: @item.Categoria?.Nombre
+                    </p>
+
+                    @if (Context.Session.GetString("Rol") == "admin")
+                    {
+                        <a href="/Producto/Edit/@item.Id"
+                           class="btn btn-warning btn-sm">Editar</a>
+                        <a href="/Producto/Delete/@item.Id"
+                           class="btn btn-danger btn-sm">Eliminar</a>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>

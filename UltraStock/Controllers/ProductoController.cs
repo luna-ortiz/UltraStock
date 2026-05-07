@@ -43,11 +43,24 @@ namespace UltraStock.Controllers
 
         //guardar producto
         [HttpPost]
-        public IActionResult Create(Producto producto)
+        public IActionResult Create(Producto producto, IFormFile imagen)
         {
-            if (HttpContext.Session.GetString("Usuario") == null) //validar que no ingrese sin usuario (redirecciona a login)
+            if (HttpContext.Session.GetString("Usuario") == null)
             {
                 return RedirectToAction("Index", "Login");
+            }
+
+            if (imagen != null)
+            {
+                var ruta = Path.Combine(Directory.GetCurrentDirectory(),
+                    "wwwroot/images", imagen.FileName);
+
+                using (var stream = new FileStream(ruta, FileMode.Create))
+                {
+                    imagen.CopyTo(stream);
+                }
+
+                producto.ImagenUrl = "/images/" + imagen.FileName;
             }
 
             _context.Productos.Add(producto);

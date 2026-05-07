@@ -11,7 +11,7 @@ using UltraStock.Data;
 namespace UltraStock.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260502223210_Inicial")]
+    [Migration("20260507161842_Inicial")]
     partial class Inicial
     {
         /// <inheritdoc />
@@ -62,6 +62,10 @@ namespace UltraStock.Migrations
 
                     b.Property<int>("CategoriaId")
                         .HasColumnType("int");
+
+                    b.Property<string>("ImagenUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Nombre")
                         .IsRequired()

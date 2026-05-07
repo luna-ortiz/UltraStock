@@ -2,23 +2,111 @@
     ViewData["Title"] = "Inicio";
 }
 
-<div class="container mt-5 text-center">
-    <h1 class="mb-4">Bienvenido @Context.Session.GetString("Usuario")</h1>
-    <div class="row justify-content-center">
-        <div class="col-md-3">
-            <a href="/Producto" class="btn btn-primary w-100 mb-3">
-                Productos
-            </a>
-        </div>
-        <div class="col-md-3">
-            <a href="/Usuario" class="btn btn-success w-100 mb-3">
-                Usuarios
-            </a>
-        </div>
-        <div class="col-md-3">
-            <a href="/Categoria" class="btn btn-warning w-100 mb-3">
-                Categorías
-            </a>
-        </div>
+<div class="container mt-5">
+
+    <!-- TITULO -->
+    <div class="text-center mb-5">
+
+        <h1 class="fw-bold display-5">
+            Bienvenido
+            <span class="text-primary">
+                @Context.Session.GetString("Usuario")
+            </span>
+        </h1>
+
+        <p class="text-muted fs-5">
+            Sistema de gestión de inventario UltraStock
+        </p>
+
     </div>
+
+    <!-- TARJETAS -->
+    <div class="row justify-content-center g-4">
+
+        <!-- PRODUCTOS -->
+        <div class="col-md-3">
+
+            <div class="card shadow border-0 rounded-4 text-center p-4 h-100">
+
+                <div class="mb-3 fs-1">
+                    📦
+                </div>
+
+                <h4 class="fw-bold">
+                    Productos
+                </h4>
+
+                <p class="text-muted">
+                    Gestiona el inventario de productos.
+                </p>
+
+                <a href="/Producto"
+                       class="btn btn-primary rounded-pill px-4">
+
+                    Entrar
+
+                </a>
+
+            </div>
+
+        </div>
+
+        <!-- USUARIOS -->
+        <div class="col-md-3">
+
+            <div class="card shadow border-0 rounded-4 text-center p-4 h-100">
+
+                <div class="mb-3 fs-1">
+                    👥
+                </div>
+
+                <h4 class="fw-bold">
+                    Usuarios
+                </h4>
+
+                <p class="text-muted">
+                    Administra los usuarios del sistema.
+                </p>
+
+                <a href="/Usuario"
+                       class="btn btn-success rounded-pill px-4">
+
+                    Entrar
+
+                </a>
+
+            </div>
+
+        </div>
+
+        <!-- CATEGORIAS -->
+        <div class="col-md-3">
+
+            <div class="card shadow border-0 rounded-4 text-center p-4 h-100">
+
+                <div class="mb-3 fs-1">
+                    🏷️
+                </div>
+
+                <h4 class="fw-bold">
+                    Categorías
+                </h4>
+
+                <p class="text-muted">
+                    Organiza los productos por categorías.
+                </p>
+
+                <a href="/Categoria"
+                       class="btn btn-warning rounded-pill px-4">
+
+                    Entrar
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
 </div>
