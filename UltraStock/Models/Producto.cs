@@ -7,10 +7,11 @@ namespace UltraStock.Models
     {
         public int Id { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "El nombre es obligatorio")]
         [StringLength(100)]
         public string Nombre { get; set; }
 
+        [Required]
         [Range(0, 1000000)]
         public double Precio { get; set; }
 
@@ -28,6 +29,7 @@ namespace UltraStock.Models
         {
             return Stock > 0;
         }
+        [Required(ErrorMessage = "La imagen es obligatoria")]
         public string ImagenUrl { get; set; }
     }
 }

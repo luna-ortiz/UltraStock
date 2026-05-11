@@ -9,15 +9,15 @@ namespace UltraStock.Controllers
     public class ProductoController : Controller
     {
         private readonly AppDbContext _context;
+
         public ProductoController(AppDbContext context)
         {
             _context = context;
         }
 
-        //lista de produtos
         public IActionResult Index()
         {
-            if (HttpContext.Session.GetString("Usuario") == null) //validar que no ingrese sin usuario (redirecciona a login)
+            if (HttpContext.Session.GetString("Usuario") == null)
             {
                 return RedirectToAction("Index", "Login");
             }
@@ -29,10 +29,11 @@ namespace UltraStock.Controllers
             return View(productos);
         }
 
-        //formulario crear
+        //Guardar producto
+
         public IActionResult Create()
         {
-            if (HttpContext.Session.GetString("Usuario") == null) //validar que no ingrese sin usuario (redirecciona a login)
+            if (HttpContext.Session.GetString("Usuario") == null)
             {
                 return RedirectToAction("Index", "Login");
             }
@@ -41,7 +42,6 @@ namespace UltraStock.Controllers
             return View();
         }
 
-        //guardar producto
         [HttpPost]
         public IActionResult Create(Producto producto, IFormFile imagen)
         {
@@ -69,10 +69,10 @@ namespace UltraStock.Controllers
             return RedirectToAction("Index");
         }
 
-        //formulario editar
+        //Formulario editar
         public IActionResult Edit(int id)
         {
-            if (HttpContext.Session.GetString("Usuario") == null) //validar que no ingrese sin usuario (redirecciona a login)
+            if (HttpContext.Session.GetString("Usuario") == null)
             {
                 return RedirectToAction("Index", "Login");
             }
@@ -83,16 +83,36 @@ namespace UltraStock.Controllers
             return View(producto);
         }
 
-        //Actualizar producto
         [HttpPost]
-        public IActionResult Edit(Producto producto)
+        public IActionResult Edit(Producto producto, IFormFile imagen)
         {
-            if (HttpContext.Session.GetString("Usuario") == null) //validar que no ingrese sin usuario (redirecciona a login)
+            var productoDB = _context.Productos.Find(producto.Id);
+            if (productoDB == null)
+
+                return NotFound();
+            //Actualizar datos normales
+            productoDB.Nombre = producto.Nombre;
+            productoDB.Precio = producto.Precio;
+            productoDB.Stock = producto.Stock;
+            productoDB.CategoriaId = producto.CategoriaId;
+
+            if (imagen != null)
             {
-                return RedirectToAction("Index", "Login");
+                var carpeta = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images");
+
+                if (!Directory.Exists(carpeta))
+                {
+                    Directory.CreateDirectory(carpeta);
+                }
+                var ruta = Path.Combine(carpeta, imagen.FileName);
+
+                using (var stream = new FileStream(ruta, FileMode.Create))
+                {
+                    imagen.CopyTo(stream);
+                }
+                productoDB.ImagenUrl = "/images/" + imagen.FileName;
             }
 
-            _context.Productos.Update(producto);
             _context.SaveChanges();
 
             return RedirectToAction("Index");
@@ -101,13 +121,15 @@ namespace UltraStock.Controllers
         //Eliminar producto
         public IActionResult Delete(int id)
         {
-            if (HttpContext.Session.GetString("Usuario") == null) //validar que no ingrese sin usuario (redirecciona a login)
+            if (HttpContext.Session.GetString("Usuario") == null)
             {
                 return RedirectToAction("Index", "Login");
             }
 
-            var rol = HttpContext.Session.GetString("Rol");//Solo admin puede eliminar
-            if (rol != "admin")
+            var rol = HttpContext.Session.GetString("Rol");
+
+            //SOLO ADMIN PUEDE ELIMINAR
+            if (rol != "Admin")
             {
                 return RedirectToAction("Index");
             }
@@ -119,5 +141,7 @@ namespace UltraStock.Controllers
 
             return RedirectToAction("Index");
         }
+
+
     }
 }

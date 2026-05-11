@@ -34,6 +34,16 @@
             </select>
         </div>
 
+        <div class="mb-3">
+            <label>Imagen actual</label><br />
+            <img src="@Model.ImagenUrl" width="150" class="mb-2" />
+        </div>
+
+        <div class="mb-3">
+            <label>Nueva Imagen (Opcional)</label>
+            <input type="file" name="imagen" class="form-control" />
+        </div>
+
         <button class="btn btn-primary">Actualizar</button>
         <a href="/Producto" class="btn btn-secondary">Volver</a>
     </form>
