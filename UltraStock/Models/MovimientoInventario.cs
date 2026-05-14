@@ -12,11 +12,11 @@ namespace UltraStock.Models
         public int ProductoId { get; set; }
 
         [ForeignKey("ProductoId")]
-        public Producto Producto { get; set; }
+        public Producto? Producto { get; set; }
 
         [Required(ErrorMessage = "El tipo de movimiento es obligatorio")]
         [RegularExpression("^(Entrada|Salida)$", ErrorMessage = "Debe ser 'Entrada' o 'Salida'")]
-        public string TipoMovimiento { get; set; }
+        public string TipoMovimiento { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "La cantidad es obligatoria")]
         [Range(1, int.MaxValue, ErrorMessage = "La cantidad debe ser mayor a 0")]
@@ -27,5 +27,6 @@ namespace UltraStock.Models
 
         [StringLength(500, ErrorMessage = "Máximo 500 caracteres")]
         public string? Observacion { get; set; }
+
     }
 }

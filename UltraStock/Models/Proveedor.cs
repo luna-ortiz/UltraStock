@@ -25,6 +25,6 @@ namespace UltraStock.Models
         public string Direccion { get; set; }
 
         // Navegación
-        public ICollection<Producto> Productos { get; set; }
+        public ICollection<Producto> Productos { get; set; } = new List<Producto>();
     }
 }

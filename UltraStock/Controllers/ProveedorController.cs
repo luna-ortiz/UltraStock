@@ -61,6 +61,12 @@ namespace UltraStock.Controllers
                 ModelState.AddModelError("Email", "Ya existe un proveedor con ese email.");
             }
 
+            //temporal
+            foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+            {
+                Console.WriteLine(error.ErrorMessage);
+            }
+
             if (ModelState.IsValid)
             {
                 _context.Proveedores.Add(proveedor);
