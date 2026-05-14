@@ -1,112 +1,95 @@
 ﻿@{
     ViewData["Title"] = "Inicio";
+    var rol = Context.Session.GetString("Rol");
 }
 
-<div class="container mt-5">
+<div class="mb-4">
+    <h3 class="fw-bold">Bienvenido, <span class="text-primary">@Context.Session.GetString("Usuario")</span></h3>
+    <p class="text-muted">Rol: <span class="badge bg-primary">@rol</span> · Sistema UltraStock — Gestión y Control de Inventarios</p>
+</div>
 
-    <!-- TITULO -->
-    <div class="text-center mb-5">
-
-        <h1 class="fw-bold display-5">
-            Bienvenido
-            <span class="text-primary">
-                @Context.Session.GetString("Usuario")
-            </span>
-        </h1>
-
-        <p class="text-muted fs-5">
-            Sistema de gestión de inventario UltraStock
-        </p>
-
+<!-- Tarjetas resumen -->
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm rounded-4 text-center p-4 h-100">
+            <div class="fs-1 mb-2">📦</div>
+            <h5 class="fw-bold">Productos</h5>
+            <p class="text-muted small">Gestiona el catálogo de productos del inventario.</p>
+            <a href="/Producto" class="btn btn-primary btn-sm rounded-pill">Ver productos</a>
+        </div>
     </div>
-
-    <!-- TARJETAS -->
-    <div class="row justify-content-center g-4">
-
-        <!-- PRODUCTOS -->
-        <div class="col-md-3">
-
-            <div class="card shadow border-0 rounded-4 text-center p-4 h-100">
-
-                <div class="mb-3 fs-1">
-                    📦
-                </div>
-
-                <h4 class="fw-bold">
-                    Productos
-                </h4>
-
-                <p class="text-muted">
-                    Gestiona el inventario de productos.
-                </p>
-
-                <a href="/Producto"
-                       class="btn btn-primary rounded-pill px-4">
-
-                    Entrar
-
-                </a>
-
-            </div>
-
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm rounded-4 text-center p-4 h-100">
+            <div class="fs-1 mb-2">🏷️</div>
+            <h5 class="fw-bold">Categorías</h5>
+            <p class="text-muted small">Organiza los productos por categorías.</p>
+            <a href="/Categoria" class="btn btn-warning btn-sm rounded-pill">Ver categorías</a>
         </div>
-
-        <!-- USUARIOS -->
-        <div class="col-md-3">
-
-            <div class="card shadow border-0 rounded-4 text-center p-4 h-100">
-
-                <div class="mb-3 fs-1">
-                    👥
-                </div>
-
-                <h4 class="fw-bold">
-                    Usuarios
-                </h4>
-
-                <p class="text-muted">
-                    Administra los usuarios del sistema.
-                </p>
-
-                <a href="/Usuario"
-                       class="btn btn-success rounded-pill px-4">
-
-                    Entrar
-
-                </a>
-
-            </div>
-
-        </div>
-
-        <!-- CATEGORIAS -->
-        <div class="col-md-3">
-
-            <div class="card shadow border-0 rounded-4 text-center p-4 h-100">
-
-                <div class="mb-3 fs-1">
-                    🏷️
-                </div>
-
-                <h4 class="fw-bold">
-                    Categorías
-                </h4>
-
-                <p class="text-muted">
-                    Organiza los productos por categorías.
-                </p>
-
-                <a href="/Categoria"
-                       class="btn btn-warning rounded-pill px-4">
-
-                    Entrar
-
-                </a>
-
-            </div>
-
-        </div>
-
     </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm rounded-4 text-center p-4 h-100">
+            <div class="fs-1 mb-2">🏭</div>
+            <h5 class="fw-bold">Proveedores</h5>
+            <p class="text-muted small">Administra los proveedores del inventario.</p>
+            <a href="/Proveedor" class="btn btn-info btn-sm rounded-pill text-white">Ver proveedores</a>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm rounded-4 text-center p-4 h-100">
+            <div class="fs-1 mb-2">🔄</div>
+            <h5 class="fw-bold">Movimientos</h5>
+            <p class="text-muted small">Registra entradas y salidas del almacén.</p>
+            <a href="/Movimiento" class="btn btn-success btn-sm rounded-pill">Ver movimientos</a>
+        </div>
+    </div>
+    @if (rol == "Administrador")
+    {
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm rounded-4 text-center p-4 h-100">
+                <div class="fs-1 mb-2">👥</div>
+                <h5 class="fw-bold">Usuarios</h5>
+                <p class="text-muted small">Gestiona los usuarios del sistema.</p>
+                <a href="/Usuario" class="btn btn-danger btn-sm rounded-pill">Ver usuarios</a>
+            </div>
+        </div>
+    }
+</div>
 
+<!-- Permisos del rol actual -->
+<div class="card border-0 shadow-sm rounded-4 p-4">
+    <h5 class="fw-bold mb-3">🔐 Permisos de tu rol: <span class="text-primary">@rol</span></h5>
+    <ul class="list-group list-group-flush">
+        @if (rol == "Administrador")
+        {
+            <li class="list-group-item">✅ Control total del sistema</li>
+            <li class="list-group-item">✅ Gestión de usuarios</li>
+            <li class="list-group-item">✅ Registrar y eliminar productos, categorías y proveedores</li>
+            <li class="list-group-item">✅ Ver todos los reportes y movimientos</li>
+        }
+        else if (rol == "EncargadoAlmacen")
+        {
+            <li class="list-group-item">✅ Registrar entradas y salidas de inventario</li>
+            <li class="list-group-item">✅ Actualizar stock de productos</li>
+            <li class="list-group-item">✅ Registrar y editar productos, categorías y proveedores</li>
+            <li class="list-group-item">❌ No puede eliminar datos ni gestionar usuarios</li>
+        }
+        else if (rol == "Supervisor")
+        {
+            <li class="list-group-item">✅ Visualizar reportes y movimientos</li>
+            <li class="list-group-item">✅ Consultar productos, categorías y proveedores</li>
+            <li class="list-group-item">❌ No puede eliminar ni modificar datos</li>
+        }
+        else if (rol == "Auxiliar")
+        {
+            <li class="list-group-item">✅ Consultar inventario</li>
+            <li class="list-group-item">✅ Registrar movimientos básicos</li>
+            <li class="list-group-item">❌ No puede eliminar datos</li>
+        }
+        else if (rol == "Gerente")
+        {
+            <li class="list-group-item">✅ Visualizar reportes generales</li>
+            <li class="list-group-item">✅ Consultar estadísticas e inventario</li>
+            <li class="list-group-item">❌ Solo lectura, no modifica datos</li>
+        }
+    </ul>
 </div>

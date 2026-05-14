@@ -1,17 +1,35 @@
-﻿<h2>Login</h2>
-<form method="post">
-    <div class="mb-3">
-        <label>Correo</label>
-        <input name="correo" class="form-control" />
-    </div>
-    <div class="mb-3">
-        <label>Clave</label>
-        <input name="clave" type="password" class="form-control" />
-    </div>
-    <button class="btn btn-primary">Ingresar</button>
+﻿@{
+    ViewData["Title"] = "Iniciar Sesión";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
 
-    @if (ViewBag.Error != null)
-    {
-        <div class="text-danger">@ViewBag.Error</div>
-    }
-</form>
+<div class="d-flex justify-content-center align-items-center" style="min-height:80vh;">
+    <div class="card shadow border-0 rounded-4" style="width:420px;">
+        <div class="card-body p-5">
+            <div class="text-center mb-4">
+                <div class="fs-1">📦</div>
+                <h2 class="fw-bold text-primary">UltraStock</h2>
+                <p class="text-muted">Sistema de Gestión de Inventarios</p>
+            </div>
+
+            <form method="post">
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Correo electrónico</label>
+                    <input name="correo" type="email" class="form-control" placeholder="ejemplo@correo.com" required />
+                </div>
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">Contraseña</label>
+                    <input name="clave" type="password" class="form-control" placeholder="••••••••" required />
+                </div>
+                <button class="btn btn-primary w-100 py-2 fw-semibold">Ingresar al sistema</button>
+            </form>
+
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert alert-danger mt-3 rounded-3">
+                    ❌ @ViewBag.Error
+                </div>
+            }
+        </div>
+    </div>
+</div>

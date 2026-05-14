@@ -1,42 +1,76 @@
-﻿@model List<UltraStock.Models.Producto>
-
-<h2 class="mb-3">Lista de Productos</h2>
-
-@if (Context.Session.GetString("Rol") == "admin")
-{
-    <a class="btn btn-success mb-3" href="/Producto/Create">+ Nuevo Producto</a>
+﻿@model IEnumerable<UltraStock.Models.Producto>
+@{
+    ViewData["Title"] = "Productos";
+    var rol = Context.Session.GetString("Rol");
 }
 
-<div class="row">
-    @foreach (var item in Model)
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="fw-bold">📦 Productos</h3>
+    @if (rol == "Administrador" || rol == "EncargadoAlmacen")
     {
-        <div class="col-md-3 mb-4">
-
-            <div class="card h-100 shadow">
-
-                <img src="@item.ImagenUrl"
-                     class="card-img-top"
-                     style="height:200px; object-fit:cover;" />
-
-                <div class="card-body">
-
-                    <h5 class="card-tittle">@item.Nombre</h5>
-
-                    <p class="card-text">
-                        Precio: $@item.Precio <br />
-                        Stock: @item.Stock <br />
-                        Categoria: @item.Categoria?.Nombre
-                    </p>
-
-                    @if (Context.Session.GetString("Rol") == "admin")
-                    {
-                        <a href="/Producto/Edit/@item.Id"
-                           class="btn btn-warning btn-sm">Editar</a>
-                        <a href="/Producto/Delete/@item.Id"
-                           class="btn btn-danger btn-sm">Eliminar</a>
-                    }
-                </div>
-            </div>
-        </div>
+        <a asp-action="Create" class="btn btn-primary rounded-pill px-4">+ Nuevo Producto</a>
     }
 </div>
+
+<div class="card border-0 shadow-sm rounded-4">
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th>Imagen</th>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Precio</th>
+                    <th>Stock</th>
+                    <th>Categoría</th>
+                    <th>Proveedor</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var p in Model)
+                {
+                    <tr class="@(p.Stock == 0 ? "table-danger" : p.Stock <= 5 ? "table-warning" : "")">
+                        <td>
+                            @if (!string.IsNullOrEmpty(p.ImagenUrl))
+                            {
+                                <img src="@p.ImagenUrl" width="50" height="50" style="object-fit:cover;border-radius:6px;" />
+                            }
+                            else
+                            {
+                                <span class="text-muted">—</span>
+                            }
+                        </td>
+                        <td class="fw-semibold">@p.Nombre</td>
+                        <td class="text-muted small">@(p.Descripcion?.Length > 40 ? p.Descripcion.Substring(0, 40) + "..." : p.Descripcion)</td>
+                        <td>$@p.Precio.ToString("N2")</td>
+                        <td>
+                            <span class="badge @(p.Stock == 0 ? "bg-danger" : p.Stock <= 5 ? "bg-warning text-dark" : "bg-success")">
+                                @p.Stock uds
+                            </span>
+                        </td>
+                        <td>@p.Categoria?.Nombre</td>
+                        <td>@p.Proveedor?.Nombre</td>
+                        <td>
+                            @if (rol == "Administrador" || rol == "EncargadoAlmacen")
+                            {
+                                <a asp-action="Edit" asp-route-id="@p.Id" class="btn btn-sm btn-outline-primary">Editar</a>
+                            }
+                            @if (rol == "Administrador")
+                            {
+                                <a asp-action="Delete" asp-route-id="@p.Id"
+                                   class="btn btn-sm btn-outline-danger ms-1"
+                                   onclick="return confirm('¿Eliminar el producto @p.Nombre?')">Eliminar</a>
+                            }
+                        </td>
+                    </tr>
+                }
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="8" class="text-center text-muted py-4">No hay productos registrados.</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<p class="text-muted small mt-2">🔴 Sin stock · 🟡 Stock bajo (≤5 uds) · 🟢 Stock normal</p>

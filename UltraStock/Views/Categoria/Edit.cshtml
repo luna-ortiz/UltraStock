@@ -1,30 +1,42 @@
 ﻿@model UltraStock.Models.Categoria
+@{
+    ViewData["Title"] = "Editar Categoría";
+}
 
-<div class="container mt-4">
-
-    <h2>Editar Producto</h2>
-
-    <form asp-action="Edit" method="post">
-
-        <input type="hidden" asp-for="Id" />
-
-        <div class="mb-3">
-            <label>Nombre</label>
-            <input asp-for="Nombre" class="form-control" />
-        </div>
-
-        <div class="mb-3">
-            <label>Descripcion</label>
-            <input asp-for="Descripcion" class="form-control" />
-        </div>
-
-        <div class="mb-3">
-            <label>Estado</label>
-            <input asp-for="Estado" class="form-control" />
-        </div>
-
-        <button class="btn btn-primary">Actualizar</button>
-        <a href="/Categoria" class="btn btn-secondary">Volver</a>
-    </form>
-
+<div class="d-flex align-items-center mb-4 gap-3">
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm">← Volver</a>
+    <h3 class="fw-bold mb-0">✏️ Editar Categoría</h3>
 </div>
+
+<div class="card border-0 shadow-sm rounded-4" style="max-width:500px;">
+    <div class="card-body p-4">
+        <form asp-action="Edit" method="post">
+            @Html.AntiForgeryToken()
+            <input asp-for="Id" type="hidden" />
+            <div class="mb-3">
+                <label asp-for="Nombre" class="form-label fw-semibold">Nombre</label>
+                <input asp-for="Nombre" class="form-control" />
+                <span asp-validation-for="Nombre" class="text-danger small"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Descripcion" class="form-label fw-semibold">Descripción</label>
+                <textarea asp-for="Descripcion" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="Descripcion" class="text-danger small"></span>
+            </div>
+            <div class="mb-4">
+                <label asp-for="Estado" class="form-label fw-semibold">Estado</label>
+                <select asp-for="Estado" class="form-select">
+                    <option value="Activo">Activo</option>
+                    <option value="Inactivo">Inactivo</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary px-4">Actualizar Categoría</button>
+        </form>
+    </div>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+}

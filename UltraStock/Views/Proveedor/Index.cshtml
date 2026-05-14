@@ -1,14 +1,14 @@
-﻿@model IEnumerable<UltraStock.Models.Categoria>
+﻿@model IEnumerable<UltraStock.Models.Proveedor>
 @{
-    ViewData["Title"] = "Categorías";
+    ViewData["Title"] = "Proveedores";
     var rol = Context.Session.GetString("Rol");
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h3 class="fw-bold">🏷️ Categorías</h3>
+    <h3 class="fw-bold">🏭 Proveedores</h3>
     @if (rol == "Administrador" || rol == "EncargadoAlmacen")
     {
-        <a asp-action="Create" class="btn btn-warning rounded-pill px-4">+ Nueva Categoría</a>
+        <a asp-action="Create" class="btn btn-primary rounded-pill px-4">+ Nuevo Proveedor</a>
     }
 </div>
 
@@ -18,37 +18,37 @@
             <thead class="table-dark">
                 <tr>
                     <th>Nombre</th>
-                    <th>Descripción</th>
-                    <th>Estado</th>
+                    <th>Teléfono</th>
+                    <th>Email</th>
+                    <th>Dirección</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var c in Model)
+                @foreach (var p in Model)
                 {
                     <tr>
-                        <td class="fw-semibold">@c.Nombre</td>
-                        <td class="text-muted small">@c.Descripcion</td>
-                        <td>
-                            <span class="badge @(c.Estado == "Activo" ? "bg-success" : "bg-secondary")">@c.Estado</span>
-                        </td>
+                        <td class="fw-semibold">@p.Nombre</td>
+                        <td>@p.Telefono</td>
+                        <td>@p.Email</td>
+                        <td>@p.Direccion</td>
                         <td>
                             @if (rol == "Administrador" || rol == "EncargadoAlmacen")
                             {
-                                <a asp-action="Edit" asp-route-id="@c.Id" class="btn btn-sm btn-outline-primary">Editar</a>
+                                <a asp-action="Edit" asp-route-id="@p.Id" class="btn btn-sm btn-outline-primary">Editar</a>
                             }
                             @if (rol == "Administrador")
                             {
-                                <a asp-action="Delete" asp-route-id="@c.Id"
+                                <a asp-action="Delete" asp-route-id="@p.Id"
                                    class="btn btn-sm btn-outline-danger ms-1"
-                                   onclick="return confirm('¿Eliminar la categoría @c.Nombre?')">Eliminar</a>
+                                   onclick="return confirm('¿Eliminar proveedor @p.Nombre?')">Eliminar</a>
                             }
                         </td>
                     </tr>
                 }
                 @if (!Model.Any())
                 {
-                    <tr><td colspan="4" class="text-center text-muted py-4">No hay categorías registradas.</td></tr>
+                    <tr><td colspan="5" class="text-center text-muted py-4">No hay proveedores registrados.</td></tr>
                 }
             </tbody>
         </table>

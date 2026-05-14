@@ -1,0 +1,45 @@
+﻿@model UltraStock.Models.Proveedor
+@{
+    ViewData["Title"] = "Nuevo Proveedor";
+}
+
+<div class="d-flex align-items-center mb-4 gap-3">
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm">← Volver</a>
+    <h3 class="fw-bold mb-0">🏭 Nuevo Proveedor</h3>
+</div>
+
+<div class="card border-0 shadow-sm rounded-4" style="max-width:600px;">
+    <div class="card-body p-4">
+        <form asp-action="Create" method="post">
+            @Html.AntiForgeryToken()
+            <div class="mb-3">
+                <label asp-for="Nombre" class="form-label fw-semibold"></label>
+                <input asp-for="Nombre" class="form-control" placeholder="Nombre del proveedor" />
+                <span asp-validation-for="Nombre" class="text-danger small"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Telefono" class="form-label fw-semibold"></label>
+                <input asp-for="Telefono" class="form-control" placeholder="Ej: 3001234567" />
+                <span asp-validation-for="Telefono" class="text-danger small"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label fw-semibold"></label>
+                <input asp-for="Email" type="email" class="form-control" placeholder="proveedor@email.com" />
+                <span asp-validation-for="Email" class="text-danger small"></span>
+            </div>
+            <div class="mb-4">
+                <label asp-for="Direccion" class="form-label fw-semibold"></label>
+                <input asp-for="Direccion" class="form-control" placeholder="Dirección completa" />
+                <span asp-validation-for="Direccion" class="text-danger small"></span>
+            </div>
+            <button type="submit" class="btn btn-primary px-4">Guardar Proveedor</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+}
