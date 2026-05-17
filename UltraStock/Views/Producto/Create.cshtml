@@ -6,20 +6,30 @@
 
     <form asp-action="Create" method="post" enctype="multipart/form-data">
 
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
         <div class="mb-3">
             <label class="form-label">Nombre</label>
             <input asp-for="Nombre" class="form-control" />
+            <span asp-validation-for="Nombre" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Descripción</label>
+            <textarea asp-for="Descripcion" class="form-control"></textarea>
+            <span asp-validation-for="Descripcion" class="text-danger"></span>
         </div>
 
         <div class="mb-3">
             <label class="form-label">Precio</label>
             <input asp-for="Precio" class="form-control" />
+            <span asp-validation-for="Precio" class="text-danger"></span>
         </div>
 
         <div class="mb-3">
             <label class="form-label">Stock</label>
             <input asp-for="Stock" class="form-control" />
+            <span asp-validation-for="Stock" class="text-danger"></span>
         </div>
 
         <div class="mb-3">
@@ -33,6 +43,21 @@
                     <option value="@cat.Id">@cat.Nombre</option>
                 }
             </select>
+            <span asp-validation-for="CategoriaId" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Proveedor</label>
+
+            <select asp-for="ProveedorId" class="form-control">
+                <option value="">Seleccione un proveedor</option>
+
+                @foreach (var proveedor in ViewBag.Proveedores)
+                {
+                    <option value="@proveedor.Id">@proveedor.Nombre</option>
+                }
+            </select>
+            <span asp-validation-for="ProveedorId" class="text-danger"></span>
         </div>
 
         <div class="mb-3">
@@ -46,3 +71,7 @@
     </form>
 
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

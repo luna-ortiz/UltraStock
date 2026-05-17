@@ -18,7 +18,10 @@ namespace UltraStock.Controllers
 
         public IActionResult Index()
         {
-
+            if (HttpContext.Session.GetString("Usuario") == null)
+            {
+                return RedirectToAction("Index", "Login");
+            }
 
             var usuarios = _context.Usuarios.ToList();
 
@@ -29,7 +32,10 @@ namespace UltraStock.Controllers
 
         public IActionResult Create()
         {
-
+            if (HttpContext.Session.GetString("Usuario") == null)
+            {
+                return RedirectToAction("Index", "Login");
+            }
 
             return View();
         }
@@ -37,7 +43,10 @@ namespace UltraStock.Controllers
         [HttpPost]
         public IActionResult Create(Usuario usuario)
         {
-
+            if (HttpContext.Session.GetString("Usuario") == null)
+            {
+                return RedirectToAction("Index", "Login");
+            }
 
             if (ModelState.IsValid)
             {
@@ -55,9 +64,15 @@ namespace UltraStock.Controllers
         //Formulario editar
         public IActionResult Edit(int id)
         {
-
+            if (HttpContext.Session.GetString("Usuario") == null)
+            {
+                return RedirectToAction("Index", "Login");
+            }
 
             var usuario = _context.Usuarios.Find(id);
+            if (usuario == null)
+                return NotFound();
+
             ViewBag.Usuarios = _context.Usuarios.ToList();
 
 
@@ -68,9 +83,24 @@ namespace UltraStock.Controllers
         [HttpPost]
         public IActionResult Edit(Usuario usuario)
         {
+            if (HttpContext.Session.GetString("Usuario") == null)
+            {
+                return RedirectToAction("Index", "Login");
+            }
 
+            ModelState.Remove(nameof(usuario.Clave));
+            if (!ModelState.IsValid)
+                return View(usuario);
 
-            _context.Usuarios.Update(usuario);
+            var usuarioBD = _context.Usuarios.Find(usuario.Id);
+            if (usuarioBD == null)
+                return NotFound();
+
+            usuarioBD.Nombre = usuario.Nombre;
+            usuarioBD.Correo = usuario.Correo;
+            usuarioBD.Rol = usuario.Rol;
+            usuarioBD.celular = usuario.celular;
+
             _context.SaveChanges();
 
             return RedirectToAction("Index");
@@ -79,15 +109,20 @@ namespace UltraStock.Controllers
         //Eliminar usuario
         public IActionResult Delete(int id)
         {
-
+            if (HttpContext.Session.GetString("Usuario") == null)
+            {
+                return RedirectToAction("Index", "Login");
+            }
 
             var rol = HttpContext.Session.GetString("Rol");//Solo admin puede eliminar
-            if (rol != "admin")
+            if (rol != "Administrador")
             {
                 return RedirectToAction("Index");
             }
 
             var usuario = _context.Usuarios.Find(id);
+            if (usuario == null)
+                return NotFound();
 
             _context.Usuarios.Remove(usuario);
             _context.SaveChanges();

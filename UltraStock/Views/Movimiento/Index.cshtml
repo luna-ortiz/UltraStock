@@ -1,1 +1,77 @@
-﻿
+﻿@model List<UltraStock.Models.MovimientoInventario>
+
+<h2 class="mb-3">Movimientos de Inventario</h2>
+
+@* Botones Entrada y Salida arriba igual que Categoria *@
+<a class="btn btn-success mb-3" href="/Entrada/Index">+ Entrada</a>
+<a class="btn btn-danger mb-3" href="/Salida/Index">- Salida</a>
+
+@if (TempData["Mensaje"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Mensaje"]
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Error"]
+    </div>
+}
+
+<table class="table">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Fecha</th>
+            <th>Tipo Movimiento</th>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Observacion</th>
+            @if (Context.Session.GetString("Rol") == "Administrador" ||
+                 Context.Session.GetString("Rol") == "EncargadoAlmacen")
+            {
+                <th>Acciones</th>
+            }
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var mov in Model)
+        {
+            <tr>
+                <td>@mov.Id</td>
+                <td>@mov.Fecha.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>
+                    @if (mov.TipoMovimiento == "Entrada")
+                    {
+                        <span class="text-success">Entrada</span>
+                    }
+                    else
+                    {
+                        <span class="text-danger">Salida</span>
+                    }
+                </td>
+                <td>@mov.Producto?.Nombre</td>
+                <td>@mov.Cantidad</td>
+                <td>@mov.Observacion</td>
+
+                @if (Context.Session.GetString("Rol") == "Administrador" ||
+                     Context.Session.GetString("Rol") == "EncargadoAlmacen")
+                {
+                    <td>
+                        <a class="btn btn-warning btn-sm"
+                           href="/Movimiento/Edit/@mov.Id">Editar</a>
+
+                        @if (Context.Session.GetString("Rol") == "Administrador")
+                        {
+                            <a class="btn btn-danger btn-sm"
+                               href="/Movimiento/Delete/@mov.Id">Eliminar</a>
+                        }
+                    </td>
+                }
+
+            </tr>
+        }
+    </tbody>
+</table>

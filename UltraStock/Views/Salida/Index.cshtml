@@ -1,0 +1,76 @@
+﻿@model List<UltraStock.Models.Producto>
+
+<h2 class="mb-4">Salida de Inventario</h2>
+
+<a class="btn btn-secondary mb-3" href="/Movimiento">Volver a Movimientos</a>
+<a class="btn btn-primary mb-3" href="/Salida/Carrito">Ver carrito de salida</a>
+
+<div class="container mt-4">
+    @if (TempData["Mensaje"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["Mensaje"]
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["Error"]
+        </div>
+    }
+
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-3 mb-4">
+
+                <div class="card h-100 shadow">
+
+                    <img src="@item.ImagenUrl"
+                         class="card-img-top"
+                         style="height:200px; object-fit:cover;" />
+
+                    <div class="card-body">
+
+                        <h5 class="card-title">@item.Nombre</h5>
+
+                        <p class="card-text">
+                            Precio: $@item.Precio <br />
+                            Stock: @item.Stock <br />
+                            Categoria: @item.Categoria?.Nombre
+                        </p>
+
+                        <hr>
+
+                        @* En salida sí se valida stock, igual que Producto/Index *@
+                        @if (item.Stock > 0)
+                        {
+                            <form asp-action="AgregarCarrito" method="post">
+                                <input type="hidden" name="id" value="@item.Id" />
+                                <input type="number"
+                                       name="cantidad"
+                                       value="1"
+                                       min="1"
+                                       max="@item.Stock"
+                                       class="form-control mb-2" />
+                                <button class="btn btn-danger w-100">
+                                    Agregar a salida
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <div class="alert alert-warning text-center">
+                                Producto agotado
+                            </div>
+                            <button class="btn btn-danger w-100" disabled>
+                                Sin stock
+                            </button>
+                        }
+
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

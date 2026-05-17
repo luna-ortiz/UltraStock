@@ -25,6 +25,7 @@ namespace UltraStock.Controllers
 
             var productos = _context.Productos
                 .Include(p => p.Categoria)
+                .Include(p => p.Proveedor)
                 .ToList();
 
             return View(productos);
@@ -40,6 +41,7 @@ namespace UltraStock.Controllers
             }
 
             ViewBag.Categorias = _context.Categorias.ToList();
+            ViewBag.Proveedores = _context.Proveedores.ToList();
             return View();
         }
 
@@ -51,17 +53,35 @@ namespace UltraStock.Controllers
                 return RedirectToAction("Index", "Login");
             }
 
-            if (imagen != null)
+            if (!ModelState.IsValid)
             {
+                ViewBag.Categorias = _context.Categorias.ToList();
+                ViewBag.Proveedores = _context.Proveedores.ToList();
+                return View(producto);
+            }
+
+            if (imagen != null && imagen.Length > 0)
+            {
+                var extension = Path.GetExtension(imagen.FileName).ToLowerInvariant();
+                var extensionesPermitidas = new[] { ".jpg", ".jpeg", ".png", ".webp" };
+                if (!extensionesPermitidas.Contains(extension))
+                {
+                    ModelState.AddModelError("ImagenUrl", "Solo se permiten imágenes JPG, PNG o WEBP.");
+                    ViewBag.Categorias = _context.Categorias.ToList();
+                    ViewBag.Proveedores = _context.Proveedores.ToList();
+                    return View(producto);
+                }
+
+                var nombreArchivo = $"{Guid.NewGuid()}{extension}";
                 var ruta = Path.Combine(Directory.GetCurrentDirectory(),
-                    "wwwroot/images", imagen.FileName);
+                    "wwwroot/images", nombreArchivo);
 
                 using (var stream = new FileStream(ruta, FileMode.Create))
                 {
                     imagen.CopyTo(stream);
                 }
 
-                producto.ImagenUrl = "/images/" + imagen.FileName;
+                producto.ImagenUrl = "/images/" + nombreArchivo;
             }
 
             _context.Productos.Add(producto);
@@ -79,7 +99,11 @@ namespace UltraStock.Controllers
             }
 
             var producto = _context.Productos.Find(id);
+            if (producto == null)
+                return NotFound();
+
             ViewBag.Categorias = _context.Categorias.ToList();
+            ViewBag.Proveedores = _context.Proveedores.ToList();
 
             return View(producto);
         }
@@ -95,15 +119,38 @@ namespace UltraStock.Controllers
             var productoBD = _context.Productos.Find(producto.Id);
             if (productoBD == null)
                 return NotFound();
+
+            ModelState.Remove(nameof(producto.Categoria));
+            ModelState.Remove(nameof(producto.Proveedor));
+            ModelState.Remove(nameof(producto.ImagenUrl));
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Categorias = _context.Categorias.ToList();
+                ViewBag.Proveedores = _context.Proveedores.ToList();
+                return View(productoBD);
+            }
+
             //Actualizar datos normales
             productoBD.Nombre = producto.Nombre;
+            productoBD.Descripcion = producto.Descripcion;
             productoBD.Precio = producto.Precio;
             productoBD.Stock = producto.Stock;
             productoBD.CategoriaId = producto.CategoriaId;
+            productoBD.ProveedorId = producto.ProveedorId;
 
             //Si sube nueva imagne
-            if (imagen != null)
+            if (imagen != null && imagen.Length > 0)
             {
+                var extension = Path.GetExtension(imagen.FileName).ToLowerInvariant();
+                var extensionesPermitidas = new[] { ".jpg", ".jpeg", ".png", ".webp" };
+                if (!extensionesPermitidas.Contains(extension))
+                {
+                    ModelState.AddModelError("ImagenUrl", "Solo se permiten imágenes JPG, PNG o WEBP.");
+                    ViewBag.Categorias = _context.Categorias.ToList();
+                    ViewBag.Proveedores = _context.Proveedores.ToList();
+                    return View(productoBD);
+                }
+
                 var carpeta = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images");
 
                 if (!Directory.Exists(carpeta))
@@ -111,13 +158,14 @@ namespace UltraStock.Controllers
                     Directory.CreateDirectory(carpeta);
                 }
 
-                var ruta = Path.Combine(carpeta, imagen.FileName);
+                var nombreArchivo = $"{Guid.NewGuid()}{extension}";
+                var ruta = Path.Combine(carpeta, nombreArchivo);
 
                 using (var stream = new FileStream(ruta, FileMode.Create))
                 {
                     imagen.CopyTo(stream);
                 }
-                productoBD.ImagenUrl = "/images/" + imagen.FileName;
+                productoBD.ImagenUrl = "/images/" + nombreArchivo;
             }
 
             _context.SaveChanges();
@@ -136,131 +184,17 @@ namespace UltraStock.Controllers
             var rol = HttpContext.Session.GetString("Rol");
 
             //SOLO ADMIN PUEDE ELIMINAR
-            if (rol != "admin")
+            if (rol != "Administrador")
             {
                 return RedirectToAction("Index");
             }
 
             var producto = _context.Productos.Find(id);
+            if (producto == null)
+                return NotFound();
 
             _context.Productos.Remove(producto);
             _context.SaveChanges();
-
-            return RedirectToAction("Index");
-        }
-
-        public IActionResult AgregarCarrito(int id, int cantidad)
-        {
-            var producto = _context.Productos.Find(id);
-            // Validar Stock
-            if (producto == null || producto.Stock == 0)
-            {
-                TempData["Error"] = "Producto sin existencias";
-                return RedirectToAction("Index");
-            }
-
-            // Validar cantidad
-            if (cantidad > producto.Stock)
-            {
-                TempData["Error"] = "No hay disponibles tantas unidades";
-                return RedirectToAction("Index");
-            }
-
-            var carritoJson = HttpContext.Session.GetString("Carrito");
-
-            List<CarritoItem> carrito;
-
-            if (carritoJson == null)
-            {
-                carrito = new List<CarritoItem>();
-            }
-            else
-            {
-                carrito = System.Text.Json.JsonSerializer
-                    .Deserialize<List<CarritoItem>>(carritoJson);
-            }
-
-            var item = carrito.FirstOrDefault(p => p.ProductoId == id);
-
-            if (item != null)
-            {
-                if ((item.Cantidad + cantidad) > producto.Stock)
-                {
-                    TempData["Error"] = "No hay suficientes unidades disponibles";
-                    return RedirectToAction("Index");
-                }
-
-                item.Cantidad += cantidad;
-            }
-            else
-            {
-                carrito.Add(new CarritoItem
-                {
-                    ProductoId = id,
-                    Cantidad = cantidad
-                });
-            }
-
-            HttpContext.Session.SetString(
-                "Carrito",
-                System.Text.Json.JsonSerializer.Serialize(carrito));
-
-            // Mensaje éxito
-            TempData["Mensaje"] = "Producto agregado al carrito";
-
-            return RedirectToAction("Index");
-        }
-
-        public IActionResult Carrito()
-        {
-            var carritoJson = HttpContext.Session.GetString("Carrito");
-            List<CarritoItem> carrito;
-
-            if (carritoJson == null)
-                carrito = new List<CarritoItem>();
-            else
-                carrito = JsonSerializer.Deserialize<List<CarritoItem>>(carritoJson);
-
-            var productos = new List<(Producto producto, int cantidad)>();
-
-            foreach (var item in carrito)
-            {
-                var producto = _context.Productos.Find(item.ProductoId);
-
-                if (producto != null)
-                {
-                    productos.Add((producto, item.Cantidad));
-                }
-            }
-
-            return View(productos);
-        }
-
-        public IActionResult Comprar()
-        {
-            var carritoJson = HttpContext.Session.GetString("carrito");
-
-            if (carritoJson == null)
-                return RedirectToAction("Index");
-
-            var carrito = JsonSerializer.Deserialize<List<CarritoItem>>(carritoJson);
-
-            foreach (var item in carrito)
-            {
-                var producto = _context.Productos.Find(item.ProductoId);
-
-                if (producto != null)
-                {
-                    if (producto.Stock >= item.Cantidad)
-                    {
-                        producto.Stock -= item.Cantidad;
-                    }
-                }
-            }
-
-            _context.SaveChanges();
-
-            HttpContext.Session.Remove("Carrito");
 
             return RedirectToAction("Index");
         }

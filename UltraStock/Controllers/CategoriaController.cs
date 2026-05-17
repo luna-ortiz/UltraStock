@@ -48,6 +48,9 @@ namespace UltraStock.Controllers
                 return RedirectToAction("Index", "Login");
             }
 
+            if (!ModelState.IsValid)
+                return View(categoria);
+
             _context.Categorias.Add(categoria);
             _context.SaveChanges();
 
@@ -63,6 +66,8 @@ namespace UltraStock.Controllers
             }
 
             var categoria = _context.Categorias.Find(id);
+            if (categoria == null)
+                return NotFound();
 
             return View(categoria);
         }
@@ -75,6 +80,9 @@ namespace UltraStock.Controllers
             {
                 return RedirectToAction("Index", "Login");
             }
+
+            if (!ModelState.IsValid)
+                return View(categoria);
 
             _context.Categorias.Update(categoria);
             _context.SaveChanges();
@@ -91,12 +99,14 @@ namespace UltraStock.Controllers
             }
 
             var rol = HttpContext.Session.GetString("Rol");//Solo admin puede eliminar
-            if (rol != "admin")
+            if (rol != "Administrador")
             {
                 return RedirectToAction("Index");
             }
 
             var categoria = _context.Categorias.Find(id);
+            if (categoria == null)
+                return NotFound();
 
             _context.Categorias.Remove(categoria);
             _context.SaveChanges();

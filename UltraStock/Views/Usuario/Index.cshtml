@@ -2,7 +2,7 @@
 
 <h2>Lista de Usuario</h2>
 
-@if (Context.Session.GetString("Rol") == "admin") //si es admin
+@if (Context.Session.GetString("Rol") == "Administrador")
 {
     <a class="btn btn-success mb-3" href="/Usuario/Create">+ Nuevo Usuario</a>
 }
@@ -14,7 +14,7 @@
             <th>Correo</th>
             <th>Rol</th>
             <th>Celular</th>
-            @if (Context.Session.GetString("Rol") == "admin") //si es admin
+            @if (Context.Session.GetString("Rol") == "Administrador")
             {
                 <th>Acciones</th>
             }
@@ -31,7 +31,7 @@
                 <td>@user.Rol</td>
                 <td>@user.celular</td>
 
-                @if (Context.Session.GetString("Rol") == "admin") //si es admin
+                @if (Context.Session.GetString("Rol") == "Administrador")
                 {
                     <td>
                         <a class="btn btn-warning btn-sm"

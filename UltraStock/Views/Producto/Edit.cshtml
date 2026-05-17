@@ -6,21 +6,32 @@
 
     <form asp-action="Edit" method="post" enctype="multipart/form-data">
 
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
         <input type="hidden" asp-for="Id" />
 
         <div class="mb-3">
             <label>Nombre</label>
             <input asp-for="Nombre" class="form-control" />
+            <span asp-validation-for="Nombre" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label>Descripción</label>
+            <textarea asp-for="Descripcion" class="form-control"></textarea>
+            <span asp-validation-for="Descripcion" class="text-danger"></span>
         </div>
 
         <div class="mb-3">
             <label>Precio</label>
             <input asp-for="Precio" class="form-control" />
+            <span asp-validation-for="Precio" class="text-danger"></span>
         </div>
 
         <div class="mb-3">
             <label>Stock</label>
             <input asp-for="Stock" class="form-control" />
+            <span asp-validation-for="Stock" class="text-danger"></span>
         </div>
 
         <div class="mb-3">
@@ -32,11 +43,24 @@
                     <option value="@cat.Id">@cat.Nombre</option>
                 }
             </select>
+            <span asp-validation-for="CategoriaId" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label>Proveedor</label>
+
+            <select asp-for="ProveedorId" class="form-control">
+                @foreach (var proveedor in ViewBag.Proveedores)
+                {
+                    <option value="@proveedor.Id">@proveedor.Nombre</option>
+                }
+            </select>
+            <span asp-validation-for="ProveedorId" class="text-danger"></span>
         </div>
 
         <div class="mb-3">
             <label>Imagen actual</label><br />
-            <img src="@Model.ImagenUrl" width="150" class="mb-2" />
+            <img src="@(string.IsNullOrWhiteSpace(Model.ImagenUrl) ? "/images/OIP.webp" : Model.ImagenUrl)" width="150" class="mb-2" />
         </div>
 
         <div class="mb-3">
@@ -49,3 +73,7 @@
     </form>
 
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

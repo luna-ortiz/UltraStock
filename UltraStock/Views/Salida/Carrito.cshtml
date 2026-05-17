@@ -1,0 +1,56 @@
+﻿@model List<(UltraStock.Models.Producto producto, int cantidad)>
+
+<div class="container mt-4">
+
+    <h2>Carrito de Salida</h2>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">No hay productos agregados a la salida.</div>
+        <a href="/Salida/Index" class="btn btn-secondary">Volver</a>
+    }
+    else
+    {
+        <table class="table table-bordered">
+
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Stock Actual</th>
+                    <th>Cantidad a Salir</th>
+                    <th>Stock Final</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.producto.Nombre</td>
+                        <td>@item.producto.Stock</td>
+                        <td>@item.cantidad</td>
+                        <td>@(item.producto.Stock - item.cantidad)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        @* Observacion opcional antes de confirmar *@
+        <form asp-action="Confirmar" method="post">
+            <div class="mb-3">
+                <label>Observacion (opcional)</label>
+                <input type="text" name="observacion" class="form-control"
+                       placeholder="Ej: Venta a cliente, orden #456" />
+            </div>
+
+            <button class="btn btn-danger">Confirmar Salida</button>
+            <a href="/Salida/Index" class="btn btn-secondary">Seguir agregando</a>
+        </form>
+    }
+
+</div>

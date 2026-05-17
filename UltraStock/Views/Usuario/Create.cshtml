@@ -21,13 +21,14 @@
     <div class="mb-3">
         <label>Rol</label>
         <select asp-for="Rol" class="form-control">
+            <option value="">Seleccione un rol</option>
             <option value="Administrador">Administrador</option>
-            <option value="Cliente">Usuario</option>
-            <option value="admin">admin</option>
-
-
+            <option value="EncargadoAlmacen">Encargado de Almacén</option>
+            <option value="Supervisor">Supervisor</option>
+            <option value="Auxiliar">Auxiliar</option>
+            <option value="Gerente">Gerente</option>
         </select>
-
+        <span asp-validation-for="Rol" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
@@ -46,3 +47,7 @@
     <button type="submit" class="btn btn-success">Guardar</button>
     <a href="/Usuario" class="btn btn-secondary">Volver</a>
 </form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

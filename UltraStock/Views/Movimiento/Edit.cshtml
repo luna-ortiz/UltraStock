@@ -1,1 +1,65 @@
-﻿
+﻿@model UltraStock.Models.MovimientoInventario
+
+@{
+    var productos = ViewBag.Productos as List<UltraStock.Models.Producto> ?? new List<UltraStock.Models.Producto>();
+}
+
+<div class="container mt-4">
+
+    <h2>Editar Movimiento</h2>
+
+    <form asp-action="Edit" method="post">
+
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <input type="hidden" asp-for="Id" />
+
+        <div class="mb-3">
+            <label>Producto</label>
+            <select asp-for="ProductoId" class="form-control">
+                <option value="">-- Seleccione un producto --</option>
+                @foreach (var p in productos)
+                {
+                    <option value="@p.Id">@p.Nombre (Stock: @p.Stock)</option>
+                }
+            </select>
+            <span asp-validation-for="ProductoId" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label>Tipo Movimiento</label>
+            <select asp-for="TipoMovimiento" class="form-control">
+                <option value="Entrada">Entrada</option>
+                <option value="Salida">Salida</option>
+            </select>
+            <span asp-validation-for="TipoMovimiento" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label>Cantidad</label>
+            <input asp-for="Cantidad" type="number" min="1" class="form-control" />
+            <span asp-validation-for="Cantidad" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label>Fecha</label>
+            <input asp-for="Fecha" type="datetime-local" class="form-control" />
+            <span asp-validation-for="Fecha" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label>Observacion</label>
+            <input asp-for="Observacion" class="form-control" />
+            <span asp-validation-for="Observacion" class="text-danger"></span>
+        </div>
+
+        <button class="btn btn-primary">Actualizar</button>
+        <a href="/Movimiento" class="btn btn-secondary">Volver</a>
+
+    </form>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
