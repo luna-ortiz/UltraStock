@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using UltraStock.Data;
 using UltraStock.Models;
+using UltraStock.Data;
 
 namespace UltraStock.Controllers
 {
@@ -15,121 +15,95 @@ namespace UltraStock.Controllers
             _context = context;
         }
 
-        private bool TieneAcceso() => HttpContext.Session.GetString("Usuario") != null;
-        private bool PuedeModificar()
-        {
-            var rol = HttpContext.Session.GetString("Rol");
-            return rol == "Administrador" || rol == "EncargadoAlmacen";
-        }
-        private bool EsAdmin() => HttpContext.Session.GetString("Rol") == "Administrador";
-
         public IActionResult Index()
         {
-            if (!TieneAcceso()) return RedirectToAction("Index", "Login");
+            if (HttpContext.Session.GetString("Usuario") == null)
+            {
+                return RedirectToAction("Index", "Login");
+            }
+
             var categorias = _context.Categorias.ToList();
-            ViewBag.Rol = HttpContext.Session.GetString("Rol");
+
             return View(categorias);
         }
 
+        //Guardar categoria
+
         public IActionResult Create()
         {
-            if (!TieneAcceso()) return RedirectToAction("Index", "Login");
-            if (!PuedeModificar())
+            if (HttpContext.Session.GetString("Usuario") == null)
             {
-                TempData["Error"] = "No tiene permisos para registrar categorías.";
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Login");
             }
+
+            ViewBag.Categorias = _context.Categorias.ToList();
             return View();
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult Create(Categoria categoria)
         {
-            if (!TieneAcceso()) return RedirectToAction("Index", "Login");
-            if (!PuedeModificar())
+            if (HttpContext.Session.GetString("Usuario") == null)
             {
-                TempData["Error"] = "No tiene permisos para registrar categorías.";
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Login");
             }
 
-            if (_context.Categorias.Any(c => c.Nombre == categoria.Nombre))
-            {
-                ModelState.AddModelError("Nombre", "Ya existe una categoría con ese nombre.");
-            }
+            _context.Categorias.Add(categoria);
+            _context.SaveChanges();
 
-            if (ModelState.IsValid)
-            {
-                _context.Categorias.Add(categoria);
-                _context.SaveChanges();
-                TempData["Exito"] = "Categoría registrada exitosamente.";
-                return RedirectToAction("Index");
-            }
-            return View(categoria);
+            return RedirectToAction("Index");
         }
 
+        //Formulario editar
         public IActionResult Edit(int id)
         {
-            if (!TieneAcceso()) return RedirectToAction("Index", "Login");
-            if (!PuedeModificar())
+            if (HttpContext.Session.GetString("Usuario") == null)
             {
-                TempData["Error"] = "No tiene permisos para editar categorías.";
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Login");
             }
+
             var categoria = _context.Categorias.Find(id);
-            if (categoria == null) return NotFound();
+
             return View(categoria);
         }
 
+        //Actualizar producto
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult Edit(Categoria categoria)
         {
-            if (!TieneAcceso()) return RedirectToAction("Index", "Login");
-            if (!PuedeModificar())
+            if (HttpContext.Session.GetString("Usuario") == null)
             {
-                TempData["Error"] = "No tiene permisos para editar categorías.";
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Login");
             }
 
-            if (_context.Categorias.Any(c => c.Nombre == categoria.Nombre && c.Id != categoria.Id))
-            {
-                ModelState.AddModelError("Nombre", "Ya existe una categoría con ese nombre.");
-            }
+            _context.Categorias.Update(categoria);
+            _context.SaveChanges();
 
-            if (ModelState.IsValid)
-            {
-                _context.Categorias.Update(categoria);
-                _context.SaveChanges();
-                TempData["Exito"] = "Categoría actualizada exitosamente.";
-                return RedirectToAction("Index");
-            }
-            return View(categoria);
+            return RedirectToAction("Index");
         }
 
+        //Eliminar producto
         public IActionResult Delete(int id)
         {
-            if (!TieneAcceso()) return RedirectToAction("Index", "Login");
-            if (!EsAdmin())
+            if (HttpContext.Session.GetString("Usuario") == null)
             {
-                TempData["Error"] = "Solo el Administrador puede eliminar categorías.";
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Login");
             }
 
-            if (_context.Productos.Any(p => p.CategoriaId == id))
+            var rol = HttpContext.Session.GetString("Rol");//Solo admin puede eliminar
+            if (rol != "admin")
             {
-                TempData["Error"] = "No se puede eliminar: la categoría tiene productos asociados.";
                 return RedirectToAction("Index");
             }
 
             var categoria = _context.Categorias.Find(id);
-            if (categoria == null) return NotFound();
 
             _context.Categorias.Remove(categoria);
             _context.SaveChanges();
-            TempData["Exito"] = "Categoría eliminada correctamente.";
+
             return RedirectToAction("Index");
         }
+
+
     }
 }
-

@@ -17,14 +17,5 @@ namespace UltraStock.Data
         public DbSet<Proveedor> Proveedores { get; set; }
         public DbSet<MovimientoInventario> MovimientosInventario { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-
-            // Configurar precisión decimal para Producto.Precio
-            modelBuilder.Entity<Producto>()
-                .Property(p => p.Precio)
-                .HasColumnType("decimal(18,2)");
-        }
     }
 }

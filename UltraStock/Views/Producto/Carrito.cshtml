@@ -1,0 +1,35 @@
+﻿@model List<(UltraStock.Models.Producto producto, int cantidad)>
+
+<div class="container mt-4">
+
+    <h2>Carrito de Compras</h2>
+
+    <table class="table table bordered">
+
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Precio</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.producto.Nombre</td>
+                    <td>@item.cantidad</td>
+                    <td>$@item.producto.Precio</td>
+                    <td>$@(item.producto.Precio * item.cantidad)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <a href="/Producto/Comprar" class="btn btn-sucess">
+        Comprar
+    </a>
+
+</div>

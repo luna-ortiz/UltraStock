@@ -1,54 +1,35 @@
-﻿@model UltraStock.Models.Usuario
-@{
-    ViewData["Title"] = "Editar Usuario";
-}
+﻿@model  UltraStock.Models.Usuario
 
-<div class="d-flex align-items-center mb-4 gap-3">
-    <a asp-action="Index" class="btn btn-outline-secondary btn-sm">← Volver</a>
-    <h3 class="fw-bold mb-0">✏️ Editar Usuario</h3>
+<div class="container mt-4">
+
+    <h2>Editar Usuario</h2>
+
+    <form asp-action="Edit" method="post">
+
+        <input type="hidden" asp-for="Id" />
+
+        <div class="mb-3">
+            <label>Nombre</label>
+            <input asp-for="Nombre" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label>Correo</label>
+            <input asp-for="Correo" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label>Rol</label>
+            <input asp-for="Rol" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label>Celular</label>
+            <input asp-for="celular" class="form-control" />
+        </div>
+
+        <button class="btn btn-primary">Actualizar</button>
+        <a href="/Usuario" class="btn btn-secondary">Volver</a>
+    </form>
+
 </div>
-
-<div class="card border-0 shadow-sm rounded-4" style="max-width:550px;">
-    <div class="card-body p-4">
-        <form asp-action="Edit" method="post">
-            @Html.AntiForgeryToken()
-            <input asp-for="Id" type="hidden" />
-            <div class="mb-3">
-                <label asp-for="Nombre" class="form-label fw-semibold">Nombre completo</label>
-                <input asp-for="Nombre" class="form-control" />
-                <span asp-validation-for="Nombre" class="text-danger small"></span>
-            </div>
-            <div class="mb-3">
-                <label asp-for="Correo" class="form-label fw-semibold">Correo electrónico</label>
-                <input asp-for="Correo" type="email" class="form-control" />
-                <span asp-validation-for="Correo" class="text-danger small"></span>
-            </div>
-            <div class="mb-3">
-                <label asp-for="celular" class="form-label fw-semibold">Celular</label>
-                <input asp-for="celular" class="form-control" maxlength="10" />
-                <span asp-validation-for="celular" class="text-danger small"></span>
-            </div>
-            <div class="mb-3">
-                <label asp-for="Rol" class="form-label fw-semibold">Rol</label>
-                <select asp-for="Rol" class="form-select">
-                    @foreach (var r in ViewBag.Roles as List<string>)
-                    {
-                        <option value="@r" selected="@(r == Model.Rol)">@r</option>
-                    }
-                </select>
-                <span asp-validation-for="Rol" class="text-danger small"></span>
-            </div>
-            <div class="mb-4">
-                <label class="form-label fw-semibold">Nueva contraseña <span class="text-muted small">(dejar vacío para mantener la actual)</span></label>
-                <input name="Clave" type="password" class="form-control" placeholder="Nueva contraseña (opcional)" />
-            </div>
-            <button type="submit" class="btn btn-primary px-4">Actualizar Usuario</button>
-        </form>
-    </div>
-</div>
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-
-}

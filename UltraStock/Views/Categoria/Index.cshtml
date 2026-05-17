@@ -1,56 +1,54 @@
-﻿@model IEnumerable<UltraStock.Models.Categoria>
-@{
-    ViewData["Title"] = "Categorías";
-    var rol = Context.Session.GetString("Rol");
+﻿@model List<UltraStock.Models.Categoria>
+
+<h2 class="mb-3">Lista de Categorias</h2>
+
+@if (Context.Session.GetString("Rol") == "admin") //si es admin
+{
+    <a class="btn btn-success mb-3" href="/Categoria/Create">+ Nueva Categoria</a>
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h3 class="fw-bold">🏷️ Categorías</h3>
-    @if (rol == "Administrador" || rol == "EncargadoAlmacen")
-    {
-        <a asp-action="Create" class="btn btn-warning rounded-pill px-4">+ Nueva Categoría</a>
-    }
-</div>
+<table class="table">
+    <thead class="table-dark">
+        <tr>
+            <th>Nombre</th>
+            <th>Descripcion</th>
+            <th>Estado</th>
+            @if (Context.Session.GetString("Rol") == "admin")//si es admin
+            {
+                <th>Acciones</th>
+            }
+        </tr>
+    </thead>
 
-<div class="card border-0 shadow-sm rounded-4">
-    <div class="card-body p-0">
-        <table class="table table-hover mb-0">
-            <thead class="table-dark">
-                <tr>
-                    <th>Nombre</th>
-                    <th>Descripción</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var c in Model)
+    <tbody>
+        @foreach (var cat in Model)
+        {
+            <tr>
+                <td>@cat.Nombre</td>
+                <td>@cat.Descripcion</td>
+                <td>
+                    @if (string.IsNullOrEmpty(cat.Nombre))
+                    {
+                        <span class="text-danger" href="/Categoria/Edit/@cat.Id">Sin nombre</span>
+                    }
+                    else
+                    {
+                        <span class="text-success" href="/Categoria/Delete/@cat.Id">Activa</span>
+                    }
+                </td>
+
+                @if (Context.Session.GetString("Rol") == "admin") //si es admin
                 {
-                    <tr>
-                        <td class="fw-semibold">@c.Nombre</td>
-                        <td class="text-muted small">@c.Descripcion</td>
-                        <td>
-                            <span class="badge @(c.Estado == "Activo" ? "bg-success" : "bg-secondary")">@c.Estado</span>
-                        </td>
-                        <td>
-                            @if (rol == "Administrador" || rol == "EncargadoAlmacen")
-                            {
-                                <a asp-action="Edit" asp-route-id="@c.Id" class="btn btn-sm btn-outline-primary">Editar</a>
-                            }
-                            @if (rol == "Administrador")
-                            {
-                                <a asp-action="Delete" asp-route-id="@c.Id"
-                                   class="btn btn-sm btn-outline-danger ms-1"
-                                   onclick="return confirm('¿Eliminar la categoría @c.Nombre?')">Eliminar</a>
-                            }
-                        </td>
-                    </tr>
+                    <td>
+                        <a class="btn btn-warning btn-sm"
+                           href="/Categoria/Edit/@cat.Id">Editar</a>
+
+                        <a class="btn btn-danger btn-sm"
+                           href="/Categoria/Delete/@cat.Id">Eliminar</a>
+                    </td>
                 }
-                @if (!Model.Any())
-                {
-                    <tr><td colspan="4" class="text-center text-muted py-4">No hay categorías registradas.</td></tr>
-                }
-            </tbody>
-        </table>
-    </div>
-</div>
+
+            </tr>
+        }
+    </tbody>
+</table>

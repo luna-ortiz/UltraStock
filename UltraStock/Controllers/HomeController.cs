@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using UltraStock.Models;
 
-namespace UltraStock.Controllers
+namespace TiendaVirtualOrtiz.Controllers
 {
     public class HomeController : Controller
     {

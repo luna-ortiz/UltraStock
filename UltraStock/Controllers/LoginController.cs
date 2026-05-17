@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using UltraStock.Data;
-using UltraStock.Helpers;
 using UltraStock.Models;
+using UltraStock.Helpers;
 
 namespace UltraStock.Controllers
 {
